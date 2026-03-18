@@ -31,8 +31,8 @@ public class Students {
     private String lastName;
 
     @Column(name="email", length=150, unique=true)
-    @Email
-    @NotBlank(message="Please Enter a Valid Email")
+    @NotBlank
+    @Email(message="Please Enter a Valid Email")
     private String email;
 
     @Column(name="phone", length=15, unique=true)

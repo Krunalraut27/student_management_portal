@@ -2,6 +2,7 @@ package com.student.management.Service;
 
 import com.student.management.Entity.Students;
 import com.student.management.Entity.UserTable;
+import com.student.management.Exception.StudentNotFoundException;
 import com.student.management.Repository.StudentRepository;
 import com.student.management.Repository.UserRepo;
 import com.student.management.Utility.PasswordGenerator;
@@ -39,7 +40,11 @@ public class StudentService {
         student.setPassword(password);
 
         UserTable user = new UserTable();
+        user.setFirstName(student.getFirstName());
+        user.setLastName(student.getLastName());
+        user.setCreatedAt(LocalDateTime.now());
         user.setEmail(student.getEmail());
+        user.setActive(true);
 
         userRepository.save(user);
 
@@ -49,7 +54,7 @@ public class StudentService {
 
         emailService.sendPasswordToEmail(student.getEmail(), password);
 
-        return new ResponseEntity<Students>(savedStudent, HttpStatus.OK);
+        return new ResponseEntity<Students>(savedStudent, HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<List<Students>> getAllStudents()
@@ -62,8 +67,10 @@ public class StudentService {
         Optional<Students> stdById = studentRepository.findById(id);
         if (stdById.isPresent()) {
             return new ResponseEntity<>(stdById.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Student record not found", HttpStatusCode.valueOf(404));
+        }
+        else
+        {
+            throw new StudentNotFoundException("Student not found with id" + id);
         }
     }
 
