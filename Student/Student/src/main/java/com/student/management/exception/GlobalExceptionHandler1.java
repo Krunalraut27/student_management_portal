@@ -10,10 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler1 {
 
-        @ExceptionHandler(ResourceNotFoundException.class)
-        public ResponseEntity<?> handleNotFound(ResourceNotFoundException ex){
+        @ExceptionHandler(ResourceNotFoundException1.class)
+        public ResponseEntity<?> handleNotFound(ResourceNotFoundException1 ex){
 
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
