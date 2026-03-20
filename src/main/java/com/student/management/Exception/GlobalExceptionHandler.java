@@ -22,4 +22,20 @@ public class GlobalExceptionHandler {
         return ex.getBindingResult().getFieldError().getDefaultMessage();
 
     }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleNotFound(ResourceNotFoundException ex){
+
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex){
+
+        Map<String,String> errors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage()));
+
+        return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+    }
 }
