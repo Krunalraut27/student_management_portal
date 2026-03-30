@@ -35,4 +35,10 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<String> handleUnauthorized(UnauthorizedAccessException ex)
+    {
+        return new ResponseEntity<>("Access Denied - You are not Authorized", HttpStatus.FORBIDDEN);
+    }
 }

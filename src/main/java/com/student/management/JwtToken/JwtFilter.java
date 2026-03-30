@@ -29,7 +29,7 @@ import java.io.IOException;
             String path = request.getServletPath();
 
             // Skips login & register
-            if (path.contains("/login") || path.contains("/register")) {
+            if (path.equals("/login") || path.equals("/register")) {
                 chain.doFilter(request, response);
                 return;
             }
