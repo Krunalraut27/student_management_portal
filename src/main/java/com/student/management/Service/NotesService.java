@@ -1,6 +1,6 @@
-package com.student.management.service;
+package com.student.management.Service;
 
-import com.student.management.entity.Notes;
+import com.student.management.Entity.Notes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

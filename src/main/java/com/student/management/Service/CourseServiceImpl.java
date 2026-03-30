@@ -1,8 +1,9 @@
-package com.student.management.service;
+package com.student.management.Service;
 
-import com.student.management.entity.Course;
-import com.student.management.exception.ResourceNotFoundException1;
-import com.student.management.repository.CourseRepository;
+import com.student.management.Entity.Course;
+import com.student.management.Exception.ResourceNotFoundException;
+//import com.student.management.Exception.ResourceNotFoundException1;
+import com.student.management.Repository.CourseRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,10 +41,10 @@ public class CourseServiceImpl implements CourseService{
         public Course getCourseById(Long id) {
 
             Course course = repository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException1("Course not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
 
             if(course.getDeleted())
-                throw new ResourceNotFoundException1("Course deleted");
+                throw new ResourceNotFoundException("Course deleted");
 
             return course;
         }

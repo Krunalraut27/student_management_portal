@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,9 @@ public class StudentService {
     @Autowired
     private UserRepo userRepository;
 
+    @Autowired
+    BCryptPasswordEncoder encoder;
+
 
     public ResponseEntity<Students> registerNewStudent(Students student)
     {
@@ -37,24 +41,24 @@ public class StudentService {
         student.setStudentCode(code);
 
         String password = PasswordGenerator.generatePassword();
-        student.setPassword(password);
-
-        UserTable user = new UserTable();
-        user.setFirstName(student.getFirstName());
-        user.setLastName(student.getLastName());
-        user.setCreatedAt(LocalDateTime.now());
-        user.setEmail(student.getEmail());
-        user.setActive(true);
-
-        userRepository.save(user);
 
         student.setCreatedAt(LocalDateTime.now());
         student.setIsActive(true);
         Students savedStudent = studentRepository.save(student);
 
+        UserTable user = new UserTable();
+        user.setRole("ROLE_STUDENT");
+        user.setEmail(student.getEmail());
+        user.setPassword(encoder.encode(password));
+        user.setCreatedAt(LocalDateTime.now());
+        user.setActive(true);
+        user.setStudent(savedStudent);
+
+        userRepository.save(user);
+
         emailService.sendPasswordToEmail(student.getEmail(), password);
 
-        return new ResponseEntity<Students>(savedStudent, HttpStatusCode.valueOf(200));
+        return new ResponseEntity<Students>(savedStudent,HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<List<Students>> getAllStudents()

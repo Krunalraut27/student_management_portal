@@ -1,8 +1,8 @@
-package com.student.management.service;
+package com.student.management.Service;
 
-import com.student.management.entity.Notes;
-import com.student.management.repository.NotesRepository;
-import com.student.management.exception.ResourceNotFoundException;
+import com.student.management.Entity.Notes;
+import com.student.management.Repository.NotesRepository;
+import com.student.management.Exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

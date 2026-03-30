@@ -27,11 +27,10 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<?> getAllStudents()
+    public ResponseEntity<?> getAllUser()
     {
-        List<UserTable> allStudents = userRepository.findAll();
-        return new ResponseEntity<>(allStudents,HttpStatus.FOUND);
+        List<UserTable> allUsers = userRepository.findAll();
+        return new ResponseEntity<>(allUsers,HttpStatus.FOUND);
     }
-
 
 }

@@ -1,7 +1,7 @@
 package com.student.management.Controller;
 
 
-import com.student.management.CourseService;
+import com.student.management.Service.CourseService;
 import com.student.management.Entity.Course;
 
 import jakarta.validation.Valid;

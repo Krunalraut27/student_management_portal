@@ -1,6 +1,6 @@
-package com.student.management.repository;
+package com.student.management.Repository;
 
-import com.student.management.entity.Notes;
+import com.student.management.Entity.Notes;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

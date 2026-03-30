@@ -1,7 +1,7 @@
-package com.student.management.controller;
+package com.student.management.Controller;
 
-import com.student.management.service.NotesService;
-import com.student.management.entity.Notes;
+import com.student.management.Service.NotesService;
+import com.student.management.Entity.Notes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

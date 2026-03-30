@@ -8,8 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
 
@@ -36,6 +38,7 @@ public class SecurityConfig {
             throws Exception{
 
         http.csrf(c->c.disable())
+                .formLogin(f -> f.disable())       // Checking code
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login")
                         .permitAll()

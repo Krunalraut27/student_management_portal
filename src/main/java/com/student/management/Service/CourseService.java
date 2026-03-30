@@ -1,6 +1,6 @@
-package com.student.management.service;
+package com.student.management.Service;
 
-import com.student.management.entity.Course;
+import com.student.management.Entity.Course;
 
 import java.util.List;
 

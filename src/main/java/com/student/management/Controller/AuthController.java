@@ -32,7 +32,7 @@ public class AuthController {
 
         authenticationManager.authenticate(                      //received here
                 new UsernamePasswordAuthenticationToken(         //token is created here
-                        request.getUsername(),                   //spring securitt\y check username
+                        request.getUsername(),                   //spring security check username
                         request.getPassword()                    //password check
                         // if valid authentication success - if not exception thrown
                 )
@@ -41,11 +41,11 @@ public class AuthController {
         return jwtUtil.generateToken(request.getUsername());     //token is created  //Client will use it as a Bearer token
     }
 
-    //Fetch all students from database.
-    @GetMapping("/getAllStudents")                  //Handles GET requests
-    public ResponseEntity<?> getAllStudents()
+    //Fetch all Users from database.
+    @GetMapping("/getAllUser")                  //Handles GET requests
+    public ResponseEntity<?> getAllUser()
     {
-        return userService.getAllStudents();
+        return userService.getAllUser();
     }
 
 
@@ -54,12 +54,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody UserTable user){
         user.setModifiedAt(LocalDateTime.now());    //Sets last modified date.
         user.setCreatedAt(LocalDateTime.now());
-
         user.setPassword(encoder.encode(user.getPassword()));
-
-
         return userService.saveUser(user);   //Service saves the user and returns response.
-
-
     }
 }
