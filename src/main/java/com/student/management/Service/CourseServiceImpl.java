@@ -2,7 +2,6 @@ package com.student.management.Service;
 
 import com.student.management.Entity.Course;
 import com.student.management.Exception.ResourceNotFoundException;
-//import com.student.management.Exception.ResourceNotFoundException1;
 import com.student.management.Repository.CourseRepository;
 import org.springframework.stereotype.Service;
 

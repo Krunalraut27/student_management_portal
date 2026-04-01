@@ -9,19 +9,24 @@ public class Notes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(unique = true)
     private String note_code;
     private String title;
     private String description;
     private long subject_id;
-    private long course_id;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
     private String file_name;
     private String file_path;
     private String file_type;
     private long file_size;
 
     private boolean isActive= true;
-    private long uploadedby;
+    private long uploadedBy;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     @PrePersist
@@ -75,12 +80,12 @@ public class Notes {
         this.subject_id = subject_id;
     }
 
-    public long getCourse_id() {
-        return course_id;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setCourse_id(long course_id) {
-        this.course_id = course_id;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public String getFile_name() {
@@ -115,8 +120,6 @@ public class Notes {
         this.file_size = file_size;
     }
 
-
-
     public boolean isActive() {
         return isActive;
     }
@@ -125,12 +128,12 @@ public class Notes {
         isActive = active;
     }
 
-    public long getUploadedby() {
-        return uploadedby;
+    public long getUploadedBy() {
+        return uploadedBy;
     }
 
-    public void setUploadedby(long uploadedby) {
-        this.uploadedby = uploadedby;
+    public void setUploadedBy(long uploadedBy) {
+        this.uploadedBy = uploadedBy;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -2,6 +2,7 @@ package com.student.management.Exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,9 +15,9 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(StudentNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleStudentExists(StudentNotFoundException e){
-        return e.getMessage();
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> handleStudentNotFound(StudentNotFoundException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -36,9 +37,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<String> handleUnauthorized(UnauthorizedAccessException ex)
-    {
-        return new ResponseEntity<>("Access Denied - You are not Authorized", HttpStatus.FORBIDDEN);
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDenied() {
+        return new ResponseEntity<>("Access Denied. You are not authorized to perform this action.", HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleAllException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + ex.getMessage());
     }
 }

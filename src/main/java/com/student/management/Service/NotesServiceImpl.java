@@ -1,11 +1,17 @@
 package com.student.management.Service;
 
 import com.student.management.Entity.Notes;
+import com.student.management.Entity.UserTable;
+import com.student.management.Repository.CourseRepository;
+import com.student.management.Repository.UserRepo;
 import com.student.management.Repository.NotesRepository;
 import com.student.management.Exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.File;
 import java.util.List;
@@ -16,7 +22,13 @@ public class NotesServiceImpl implements NotesService{
         @Autowired
         private NotesRepository repo;
 
-     private String uploadDir = "C:/notes_upload/";
+        @Autowired
+        private UserRepo userRepository;
+
+        @Autowired
+        private CourseRepository courseRepository;
+
+        private String uploadDir = "C:/notes_upload/";
 
 
         @Override
@@ -40,22 +52,69 @@ public class NotesServiceImpl implements NotesService{
                 notes.setFile_type(file.getContentType());
                 notes.setFile_size(file.getSize());
                 return repo.save(notes);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception e) { e.printStackTrace();
                 throw new RuntimeException("File upload failed");
             }
         }
 
+
         @Override
         public List<Notes> getAllNotes() {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        boolean isAdmin = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
             return repo.findByIsActiveTrue();
         }
 
-        @Override
-        public Notes getNotesById(Long id) {
-            return repo.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Notes not found"));
+        UserTable user = userRepository.findByEmail(email);
+
+        Long studentCourseId = user.getStudent().getCourse().getId();
+
+        return repo.findByCourse_IdAndIsActiveTrue(studentCourseId);
+    }
+
+
+    @Override
+    public Notes getNotesById(Long id) {
+
+        Notes notes = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Notes not found"));
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        boolean isAdmin = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            return notes;
         }
+
+        UserTable user = userRepository.findByEmail(email);
+
+        Long studentCourseId = user.getStudent().getCourse().getId();
+
+        if (!studentCourseId.equals(notes.getCourse().getId())) {
+            throw new AccessDeniedException("You can only access your course notes");
+        }
+
+        return notes;
+    }
 
         @Override
         public Notes updateNotes(Long id, Notes notes) {
@@ -63,7 +122,7 @@ public class NotesServiceImpl implements NotesService{
             existing.setTitle(notes.getTitle());
             existing.setDescription(notes.getDescription());
             existing.setSubject_id(notes.getSubject_id());
-            existing.setCourse_id(notes.getCourse_id());
+            existing.setCourse(notes.getCourse());
             return repo.save(existing);
         }
 

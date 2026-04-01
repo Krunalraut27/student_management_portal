@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface NotesRepository extends JpaRepository<Notes,Long> {
     List<Notes> findByIsActiveTrue();
+    List<Notes> findByCourse_IdAndIsActiveTrue(Long courseId);
 }
