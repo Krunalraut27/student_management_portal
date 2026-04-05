@@ -26,6 +26,14 @@ import java.io.IOException;
                                         FilterChain chain)
                 throws ServletException, IOException {
 
+            String path = request.getServletPath();
+
+            // Skips login & register
+            if (path.equals("/login") || path.equals("/register")) {
+                chain.doFilter(request, response);
+                return;
+            }
+
             String header = request.getHeader("Authorization");
 
             String token = null;

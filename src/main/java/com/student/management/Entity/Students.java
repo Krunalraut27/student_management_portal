@@ -81,10 +81,6 @@ public class Students {
     @Column(name="modified_by")
     private Long modifiedBy;
 
-    @Column(name="password")
-    private String password;
-
-
     public Long getId() {
         return id;
     }
@@ -258,14 +254,6 @@ public class Students {
 
     public void setModifiedBy(Long modifiedBy) {
         this.modifiedBy = modifiedBy;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password){
-        this.password = password;
     }
 
 }

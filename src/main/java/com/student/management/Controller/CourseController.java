@@ -1,54 +1,57 @@
 package com.student.management.Controller;
 
-
 import com.student.management.Entity.Course;
-
 import com.student.management.Service.CourseService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
+@RequestMapping("/course")
 public class CourseController {
 
-        @Autowired
-        private CourseService service;
+        private final CourseService service;
 
         public CourseController(CourseService service) {
             this.service = service;
         }
 
+        @PreAuthorize("hasRole('ADMIN')")
         @PostMapping("/addCourse")
-        public ResponseEntity<Course> createCourse(@Valid @RequestBody Course course){
-            Course createdCourse = service.createCourse(course);
-            return ResponseEntity.ok(createdCourse);
+        public Course createCourse(@Valid @RequestBody Course course){
+            return service.createCourse(course);
         }
 
+        @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
         @GetMapping("/getAllCourse")
-        public ResponseEntity<List<Course>> getAllCourses(){
-            List<Course> courses = service.getAllCourses();
-            return ResponseEntity.ok(courses);
+        public List<Course> getAllCourses(){
+            return service.getAllCourses();
         }
 
-        @GetMapping("/{id}")
-        public ResponseEntity<Course> getCourse(@PathVariable Long id){
-            Course course = service.getCourseById(id);
-            return ResponseEntity.ok(course);
+        @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
+        @GetMapping("/getCourseByid/{id}")
+        public Course getCourse(@PathVariable Long id){
+            return service.getCourseById(id);
         }
 
-        @PutMapping("/{id}")
-        public ResponseEntity<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody Course course){
-            Course updatedCourse = service.updateCourse(id, course);
-            return ResponseEntity.ok(updatedCourse);
+        @PreAuthorize("hasRole('ADMIN')")
+        @PutMapping("/updateCourse/{id}")
+        public Course updateCourse(@PathVariable Long id,
+                                   @Valid @RequestBody Course course){
+
+            return service.updateCourse(id, course);
         }
 
-        @DeleteMapping("/{id}")
-        public ResponseEntity<String> deleteCourse(@PathVariable Long id){
+        @PreAuthorize("hasRole('ADMIN')")
+        @DeleteMapping("/deleteCourse/{id}")
+        public String deleteCourse(@PathVariable Long id){
+
             service.softDeleteCourse(id);
-            return ResponseEntity.ok("Course deleted successfully (Soft Delete)");
+            return "Course deleted successfully (Soft Delete)";
         }
     }
+
+

@@ -18,16 +18,6 @@ public class UserTable
 
     private String role;
 
-    @Column(name="first_name")
-    @NotBlank
-    @Size(min=2,max=100, message="First Name should not be blank")
-    private String firstName;
-
-    @Column(name="last_name")
-    @NotBlank
-    @Size(min=2,max=100, message="Last Name should not be blank")
-    private String lastName;
-
     @JoinColumn(unique = true)
     @Email
     @NotBlank(message = "Please Enter Valid Email")
@@ -119,19 +109,4 @@ public class UserTable
         this.modifiedAt = modifiedAt;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 }

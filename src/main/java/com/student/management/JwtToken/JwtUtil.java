@@ -10,9 +10,7 @@ import static java.security.KeyRep.Type.SECRET;
 
 @Component
 public class JwtUtil {
-   // private String secterKey = "mysecretkey";
 
-    //public String generateToken(String username) {
     private String SECRET_KEY = "myverysecuresecretkeymyverysecuresecretkey12345";
 
         public String generateToken(String username)
