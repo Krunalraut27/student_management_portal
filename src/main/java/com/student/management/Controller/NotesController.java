@@ -1,8 +1,8 @@
 package com.student.management.Controller;
 
 import com.student.management.Entity.Course;
-import com.student.management.Service.NotesService;
 import com.student.management.Entity.Notes;
+import com.student.management.Service.NotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +13,7 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/notes")
 public class NotesController {
 

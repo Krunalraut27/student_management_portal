@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;         //Used to create REST 
 import java.time.LocalDateTime;           //Used to store date and time.
 
 @RestController       //Creates REST API controller
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired         //inject one class object into another class

@@ -92,6 +92,7 @@ public class StudentService {
         stdToUpdate.setState(std.getState());
         stdToUpdate.setPostalCode(std.getPostalCode());
         stdToUpdate.setCountry(std.getCountry());
+        stdToUpdate.setCourse(std.getCourse());
         stdToUpdate.setModifiedAt(std.getModifiedAt());
         stdToUpdate.setModifiedBy(std.getModifiedBy());
 
