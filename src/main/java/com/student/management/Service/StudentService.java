@@ -1,5 +1,6 @@
 package com.student.management.Service;
 
+import com.student.management.Entity.Course;
 import com.student.management.Entity.Students;
 import com.student.management.Entity.UserTable;
 import com.student.management.Exception.StudentNotFoundException;
@@ -28,6 +29,9 @@ public class StudentService {
     @Autowired
     private UserRepo userRepository;
 
+    @Autowired
+    private CourseService courseService;
+
 
     public ResponseEntity<Students> registerNewStudent(Students student)
     {
@@ -38,19 +42,23 @@ public class StudentService {
 
         String password = PasswordGenerator.generatePassword();
         student.setPassword(password);
-
-        UserTable user = new UserTable();
-        user.setFirstName(student.getFirstName());
-        user.setLastName(student.getLastName());
-        user.setCreatedAt(LocalDateTime.now());
-        user.setEmail(student.getEmail());
-        user.setActive(true);
-
-        userRepository.save(user);
-
         student.setCreatedAt(LocalDateTime.now());
         student.setIsActive(true);
+
+        Course courseById = courseService.getCourseById(student.getCourse().getId());
+        student.setCourse(courseById);
         Students savedStudent = studentRepository.save(student);
+        if(savedStudent!=null)
+        {
+            UserTable user = new UserTable();
+            user.setFirstName(student.getFirstName());
+            user.setLastName(student.getLastName());
+            user.setCreatedAt(LocalDateTime.now());
+            user.setEmail(student.getEmail());
+            user.setActive(true);
+            user.setStudent(savedStudent);
+            userRepository.save(user);
+        }
 
         emailService.sendPasswordToEmail(student.getEmail(), password);
 

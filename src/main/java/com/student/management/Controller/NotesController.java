@@ -1,6 +1,6 @@
-package com.student.management.controller;
+package com.student.management.Controller;
 
-import com.student.management.service.NotesService;
+import com.student.management.Service.NotesService;
 import com.student.management.entity.Notes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/notes")
 public class NotesController {
 
@@ -48,31 +49,31 @@ public class NotesController {
 
 
     @GetMapping("/all")
-    public List<Notes> getAllNotes(){
+    public ResponseEntity<List<Notes>> getAllNotes(){
 
-        return service.getAllNotes();
+        return ResponseEntity.ok(service.getAllNotes());
     }
 
 
 
     @GetMapping("/{id}")
-    public Notes getNotesById(@PathVariable Long id) {
-        return service.getNotesById(id);
+    public ResponseEntity<Notes> getNotesById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getNotesById(id));
     }
 
 
 
     @PutMapping("/{id}")
-    public Notes updateNotes(@PathVariable Long id,
+    public ResponseEntity<Notes> updateNotes(@PathVariable Long id,
                              @RequestBody Notes notes){
-        return service.updateNotes(id,notes);
+        return ResponseEntity.ok(service.updateNotes(id,notes));
     }
 
 
 
     @DeleteMapping("/{id}")
-    public String deleteNotes(@PathVariable Long id){
+    public ResponseEntity<String> deleteNotes(@PathVariable Long id){
         service.deleteNotes(id);
-        return "Notes deleted (Soft Delete)";
+        return ResponseEntity.ok("Notes deleted (Soft Delete)");
     }
 }

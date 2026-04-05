@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import com.student.management.Entity.CourseEntity;
 
 import java.time.LocalDateTime;
 
@@ -45,7 +44,7 @@ public class Students {
 
     @ManyToOne
     @JoinColumn(name="course_id")
-    private CourseEntity course;
+    private Course course;
 
     @Column(name="address_line1")
     @Size(max=255)
@@ -154,11 +153,11 @@ public class Students {
     }
 
 
-    public CourseEntity getCourse() {
+    public Course getCourse() {
         return course;
     }
 
-    public void setCourse(CourseEntity course) {
+    public void setCourse(Course course) {
         this.course = course;
     }
 

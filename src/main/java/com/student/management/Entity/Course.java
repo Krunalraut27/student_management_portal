@@ -33,7 +33,6 @@ public class Course {
 
     @Min(value=1,message="Minimum student must be 1")
     private Integer maxStudents;
-    private Boolean deleted = false;
     private Boolean isActive=true;
 
     private LocalDateTime createdAt;
@@ -55,14 +54,6 @@ public class Course {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
     }
 
     public String getCourseCode() {

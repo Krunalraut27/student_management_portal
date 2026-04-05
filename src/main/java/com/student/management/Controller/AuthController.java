@@ -6,12 +6,13 @@ import com.student.management.Service.UserService;    //Service layer that handl
 import org.springframework.beans.factory.annotation.Autowired;    //Used for Dependency Injection.
 import org.springframework.http.ResponseEntity;      //Used to return HTTP responses like, 200 OK,404 Not Found,500 Error
 import org.springframework.security.authentication.*;        //Used for authentication process.
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;  //Used to encrypt passwords before storing them in the database.
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;         //Used to create REST APIs.
 
 import java.time.LocalDateTime;           //Used to store date and time.
 
 @RestController       //Creates REST API controller
+@CrossOrigin("*")
 public class AuthController {
 
     @Autowired         //inject one class object into another class
@@ -28,7 +29,7 @@ public class AuthController {
 
 
     @PostMapping("/login")                       //Handles POST requests
-    public String login(@RequestBody UserLoginRequest request){               //Accepts JSON request body (@Requestbody)
+    public ResponseEntity<String> login(@RequestBody UserLoginRequest request){               //Accepts JSON request body (@Requestbody)
 
         authenticationManager.authenticate(                      //received here
                 new UsernamePasswordAuthenticationToken(         //token is created here
@@ -38,15 +39,15 @@ public class AuthController {
                 )
         );
 
-        return jwtUtil.generateToken(request.getUsername());     //token is created  //Client will use it as a Bearer token
+        return ResponseEntity.ok(jwtUtil.generateToken(request.getUsername()));     //token is created  //Client will use it as a Bearer token
     }
 
     //Fetch all students from database.
-    @GetMapping("/getAllStudents")                  //Handles GET requests
-    public ResponseEntity<?> getAllStudents()
-    {
-        return userService.getAllStudents();
-    }
+//    @GetMapping("/getAllStudents")                  //Handles GET requests
+//    public ResponseEntity<?> getAllStudents()
+//    {
+//        return userService.getAllStudents();
+//    }
 
 
 

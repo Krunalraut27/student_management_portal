@@ -1,41 +1,62 @@
 package com.student.management.Exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import com.student.management.exception.ResourceNotFoundException;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(StudentNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleStudentExists(StudentNotFoundException e){
-        return e.getMessage();
+    public ResponseEntity<Map<String, String>> handleStudentExists(StudentNotFoundException e){
+
+        logger.error("Student not found exception: {}", e.getMessage(), e);
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public String handleGeneralException(MethodArgumentNotValidException ex){
-
-        return ex.getBindingResult().getFieldError().getDefaultMessage();
-
-    }
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> handleNotFound(ResourceNotFoundException ex){
+    public ResponseEntity<Map<String, String>> handleNotFound(ResourceNotFoundException ex){
 
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        logger.error("Resource not found: {}", ex.getMessage(), ex);
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex){
+    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex){
 
-        Map<String,String> errors = new HashMap<>();
-
+        logger.error("Validation error: {}", ex.getMessage(), ex);
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("error", "Validation failed");
+        Map<String, String> fieldErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
+                fieldErrors.put(error.getField(), error.getDefaultMessage()));
+        errors.put("fieldErrors", fieldErrors);
 
         return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex){
+
+        logger.error("General exception: {}", ex.getMessage(), ex);
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error,
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

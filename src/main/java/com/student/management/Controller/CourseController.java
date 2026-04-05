@@ -1,53 +1,54 @@
 package com.student.management.Controller;
 
 
-import com.student.management.CourseService;
 import com.student.management.Entity.Course;
 
+import com.student.management.Service.CourseService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/course")
+@CrossOrigin("*")
 public class CourseController {
 
-        private final CourseService service;
+        @Autowired
+        private CourseService service;
 
         public CourseController(CourseService service) {
             this.service = service;
         }
 
         @PostMapping("/addCourse")
-        public Course createCourse(@Valid @RequestBody Course course){
-            return service.createCourse(course);
+        public ResponseEntity<Course> createCourse(@Valid @RequestBody Course course){
+            Course createdCourse = service.createCourse(course);
+            return ResponseEntity.ok(createdCourse);
         }
 
         @GetMapping("/getAllCourse")
-        public List<Course> getAllCourses(){
-            return service.getAllCourses();
+        public ResponseEntity<List<Course>> getAllCourses(){
+            List<Course> courses = service.getAllCourses();
+            return ResponseEntity.ok(courses);
         }
 
         @GetMapping("/{id}")
-        public Course getCourse(@PathVariable Long id){
-            return service.getCourseById(id);
+        public ResponseEntity<Course> getCourse(@PathVariable Long id){
+            Course course = service.getCourseById(id);
+            return ResponseEntity.ok(course);
         }
 
         @PutMapping("/{id}")
-        public Course updateCourse(@PathVariable Long id,
-                                   @Valid @RequestBody Course course){
-
-            return service.updateCourse(id, course);
+        public ResponseEntity<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody Course course){
+            Course updatedCourse = service.updateCourse(id, course);
+            return ResponseEntity.ok(updatedCourse);
         }
 
         @DeleteMapping("/{id}")
-        public String deleteCourse(@PathVariable Long id){
-
+        public ResponseEntity<String> deleteCourse(@PathVariable Long id){
             service.softDeleteCourse(id);
-
-            return "Course deleted successfully (Soft Delete)";
+            return ResponseEntity.ok("Course deleted successfully (Soft Delete)");
         }
     }
-
-

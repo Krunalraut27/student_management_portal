@@ -10,31 +10,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
 
 
-    @PostMapping("registerStudent")
+    @PostMapping("/registerStudent")
     public ResponseEntity<?> registerNewStudent(@Valid @RequestBody Students student)
     {
         return studentService.registerNewStudent(student);
     }
 
-    @GetMapping("getAllStudents")
+    @GetMapping("/getAllStudents")
     public ResponseEntity<List<Students>> getAllStudents()
     {
         return studentService.getAllStudents();
     }
 
-    @GetMapping("getStudentById/{id}")
+    @GetMapping("/getStudentById/{id}")
     public ResponseEntity<?> getStudentById(@PathVariable Long id)
     {
         return studentService.getStudentById(id);
     }
 
-    @PutMapping("updateStudent/{id}")
+    @PutMapping("/updateStudent/{id}")
     public ResponseEntity<Students> updateStudentById(@PathVariable Long id,@RequestBody Students std)
     {
         return studentService.updatedStudentDetails(id, std);
