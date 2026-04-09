@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin("*")
 @RequestMapping("/notes")
 public class NotesController {
 
@@ -22,57 +22,52 @@ public class NotesController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadNotes(
+    public ResponseEntity<Notes> uploadNotes(
             @RequestParam("file") MultipartFile file,
             @RequestParam("note_code") String noteCode,
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("subject_id") Long subjectId,
-            @RequestParam("course_id") Long courseId,
-            @RequestParam("uploadedBy") Long uploadedBy) {
+            @RequestParam("course_id") Long courseId)
+    {
 
-            // 1. Create the Notes object and set the data from Postman
-            Notes notes = new Notes();
-            notes.setNote_code(noteCode);
-            notes.setTitle(title);
-            notes.setDescription(description);
-            notes.setSubject_id(subjectId);
+        Notes notes = new Notes();
+        notes.setNote_code(noteCode);
+        notes.setTitle(title);
+        notes.setDescription(description);
+        notes.setSubject_id(subjectId);
 
-            Course course = new Course();
-            course.setId(courseId);
-            notes.setCourse(course);
-            notes.setUploadedBy(uploadedBy);
+        Course course = new Course();
+        course.setId(courseId);
+        notes.setCourse(course);
+        Notes savedNote = service.uploadNotes(notes, file);
 
-            // 2. Call the service (handles the file saving and DB saving)
-            Notes savedNote = service.uploadNotes(notes, file);
-
-            return ResponseEntity.ok(savedNote);
-    }
-    @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
-    @GetMapping("/all")
-    public List<Notes> getAllNotes(){
-
-        return service.getAllNotes();
+        return ResponseEntity.ok(savedNote);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
-    @GetMapping("/{id}")
-    public Notes getNotesById(@PathVariable Long id) {
-        return service.getNotesById(id);
+    @GetMapping("/getAll")
+    public ResponseEntity<List<Notes>> getAllNotes() {
+        return ResponseEntity.ok(service.getAllNotes());
     }
 
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public Notes updateNotes(@PathVariable Long id,
-                             @RequestBody Notes notes){
-        return service.updateNotes(id,notes);
+    @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<Notes> getNotesById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getNotesById(id));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public String deleteNotes(@PathVariable Long id){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Notes> updateNotes(@PathVariable Long id,
+                                             @RequestBody Notes notes) {
+        return ResponseEntity.ok(service.updateNotes(id, notes));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteNotes(@PathVariable Long id) {
         service.deleteNotes(id);
-        return "Notes deleted (Soft Delete)";
+        return ResponseEntity.ok("Notes deleted (Soft Delete)");
     }
 }

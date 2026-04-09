@@ -3,8 +3,6 @@ package com.student.management.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import com.student.management.Entity.Students;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 

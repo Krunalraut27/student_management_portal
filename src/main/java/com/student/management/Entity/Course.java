@@ -33,7 +33,9 @@ public class Course {
 
     @Min(value=1,message="Minimum student must be 1")
     private Integer maxStudents;
-    private Boolean isActive=true;
+
+    @Column(name = "is_active")
+    private Boolean active = true;
 
     private LocalDateTime createdAt;
     private Long createdBy;
@@ -105,11 +107,11 @@ public class Course {
     }
 
     public Boolean getActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(Boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public LocalDateTime getCreatedAt() {

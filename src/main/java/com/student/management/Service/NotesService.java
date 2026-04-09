@@ -1,5 +1,6 @@
 package com.student.management.Service;
 
+import com.student.management.Entity.Course;
 import com.student.management.Entity.Notes;
 import com.student.management.Entity.UserTable;
 import com.student.management.Repository.CourseRepository;
@@ -26,32 +27,46 @@ public class NotesService{
         private UserRepo userRepository;
 
         @Autowired
-        private CourseRepository courseRepository;
+        private CourseService courseService;
 
         private String uploadDir = "C:/notes_upload/";
 
         public Notes uploadNotes(Notes notes, MultipartFile file) {
 
             try {
+                //Get logged-in user
+                String email = SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getName();
 
+                UserTable user = userRepository.findByEmail(email);
+                notes.setUploadedBy(user.getId());
+
+                // create folder if not exists
                 File folder = new File(uploadDir);
-
                 if(!folder.exists()){
                     folder.mkdirs();
                 }
 
+                // unique file name (important)
                 String fileName = file.getOriginalFilename();
                 String filePath = uploadDir + fileName;
                 File dest = new File(filePath);
                 file.transferTo(dest);
+
+                // fetch valid course (IMPORTANT)
+                Course course = courseService.getCourseById(notes.getCourse().getId());
+                notes.setCourse(course);
 
                 notes.setFile_name(file.getOriginalFilename());
                 notes.setFile_path(filePath);
                 notes.setFile_type(file.getContentType());
                 notes.setFile_size(file.getSize());
                 return repo.save(notes);
-            } catch (Exception e) { e.printStackTrace();
-                throw new RuntimeException("File upload failed");
+            }
+            catch (Exception e) { e.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         }
 
