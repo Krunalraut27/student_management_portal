@@ -1,42 +1,68 @@
 package com.student.management.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 public class Notes {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Note code is required")
+    @Size(max = 50, message = "Note code must be at most 50 characters")
     @Column(unique = true)
     private String note_code;
-    private String title;
-    private String description;
-    private long subject_id;
 
+    @NotBlank(message = "Title is required")
+    @Size(max = 200, message = "Title must be at most 200 characters")
+    private String title;
+
+    @Size(max = 1000, message = "Description can be at most 1000 characters")
+    private String description;
+
+    @NotNull(message = "Subject ID is required")
+    private Long subject_id;
+
+    @NotNull(message = "Course is required")
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @NotBlank(message = "File name is required")
+    @Size(max = 255)
     private String file_name;
+
+    @NotBlank(message = "File path is required")
+    @Size(max = 500)
     private String file_path;
+
+    @NotBlank(message = "File type is required")
+    @Size(max = 100)
     private String file_type;
+
+    @Positive(message = "File size must be greater than 0")
     private long file_size;
 
-    private boolean isActive= true;
+    private boolean isActive = true;
+
     private long uploadedBy;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime modifiedAt;
+
     @PrePersist
-    public void prePersist(){
+    public void prePersist() {
         createdAt = LocalDateTime.now();
         modifiedAt = LocalDateTime.now();
     }
 
     @PreUpdate
-    public void preUpdate(){
+    public void preUpdate() {
         modifiedAt = LocalDateTime.now();
     }
 

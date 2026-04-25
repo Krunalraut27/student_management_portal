@@ -51,7 +51,7 @@ public class StudentService {
         student.setCreatedAt(LocalDateTime.now());
         student.setIsActive(true);
 
-        Course courseById = courseService.getCourseById(student.getCourse().getId());
+        Course courseById = courseService.getCourseEntityById(student.getCourse().getId());
         student.setCourse(courseById);
         Students savedStudent = studentRepository.save(student);
 
@@ -105,7 +105,7 @@ public class StudentService {
         stdToUpdate.setPostalCode(std.getPostalCode());
         stdToUpdate.setCountry(std.getCountry());
 
-        Course course = courseService.getCourseById(std.getCourse().getId());
+        Course course = courseService.getCourseEntityById(std.getCourse().getId());
         stdToUpdate.setCourse(course);
 
         stdToUpdate.setModifiedAt(LocalDateTime.now());
