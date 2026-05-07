@@ -1,4 +1,4 @@
-package com.student.management.entity;
+package com.student.management.Entity;
 
 import jakarta.persistence.*;
 
@@ -13,7 +13,7 @@ public class Notes {
     private String note_code;
     private String title;
     private String description;
-    private long subject_id;
+    private String subject;
     private long course_id;
     private String file_name;
     private String file_path;
@@ -67,12 +67,12 @@ public class Notes {
         this.description = description;
     }
 
-    public long getSubject_id() {
-        return subject_id;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setSubject_id(long subject_id) {
-        this.subject_id = subject_id;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public long getCourse_id() {

@@ -4,9 +4,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.student.management.Entity.Students;
 
+import java.util.List;
+
 @Repository
 public interface StudentRepository extends JpaRepository<Students, Long>
 
 {
-    Long Id(long id);
+
+    // Add this new method to find only active students
+    List<Students> findByIsActiveTrue();
 }

@@ -1,13 +1,20 @@
 package com.student.management.Controller;
 
 import com.student.management.Service.NotesService;
-import com.student.management.entity.Notes;
+import com.student.management.Entity.Notes;
+import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import org.springframework.core.io.UrlResource;
 
 
 @RestController
@@ -24,7 +31,7 @@ public class NotesController {
             @RequestParam("note_code") String noteCode,
             @RequestParam("title") String title,
             @RequestParam("description") String description,
-            @RequestParam("subject_id") Long subjectId,
+            @RequestParam("subject") String subject,
             @RequestParam("course_id") Long courseId,
             @RequestParam("uploadedby") Long uploadedBy) {
 
@@ -34,7 +41,7 @@ public class NotesController {
             notes.setNote_code(noteCode);
             notes.setTitle(title);
             notes.setDescription(description);
-            notes.setSubject_id(subjectId);
+            notes.setSubject(subject);
             notes.setCourse_id(courseId);
             notes.setUploadedby(uploadedBy);
 
@@ -48,7 +55,7 @@ public class NotesController {
     }
 
 
-    @GetMapping("/all")
+    @GetMapping("/getAllNotes")
     public ResponseEntity<List<Notes>> getAllNotes(){
 
         return ResponseEntity.ok(service.getAllNotes());
@@ -63,17 +70,38 @@ public class NotesController {
 
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Notes> updateNotes(@PathVariable Long id,
-                             @RequestBody Notes notes){
-        return ResponseEntity.ok(service.updateNotes(id,notes));
+    @PutMapping("/updateNotes/{id}")
+    public ResponseEntity<?> updateNotes(
+            @PathVariable Long id,
+            @RequestParam("note_code") String noteCode,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("subject") String subject,
+            @RequestParam("course_id") Long courseId,
+            @RequestParam("uploadedby") Long uploadedBy,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+
+        Notes notes = new Notes();
+        notes.setNote_code(noteCode);
+        notes.setTitle(title);
+        notes.setDescription(description);
+        notes.setSubject(subject);
+        notes.setCourse_id(courseId);
+        notes.setUploadedby(uploadedBy);
+
+        return ResponseEntity.ok(service.updateNotes(id, notes, file));
     }
 
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteNotes/{id}")
     public ResponseEntity<String> deleteNotes(@PathVariable Long id){
         service.deleteNotes(id);
         return ResponseEntity.ok("Notes deleted (Soft Delete)");
+    }
+
+    @GetMapping("/viewFile/{id}")
+    public ResponseEntity<Resource> viewFile(@PathVariable Long id) {
+        return service.getFile(id);
     }
 }

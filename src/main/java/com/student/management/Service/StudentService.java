@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,8 @@ public class StudentService {
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public ResponseEntity<Students> registerNewStudent(Students student)
     {
@@ -41,7 +44,6 @@ public class StudentService {
         student.setStudentCode(code);
 
         String password = PasswordGenerator.generatePassword();
-        student.setPassword(password);
         student.setCreatedAt(LocalDateTime.now());
         student.setIsActive(true);
 
@@ -57,17 +59,20 @@ public class StudentService {
             user.setEmail(student.getEmail());
             user.setActive(true);
             user.setStudent(savedStudent);
+            user.setRole("STUDENT");
+            // Encrypt password before saving
+            user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
         }
 
-        emailService.sendPasswordToEmail(student.getEmail(), password);
+        emailService.sendPasswordToEmail(student.getEmail(), password, student.getFirstName());
 
         return new ResponseEntity<Students>(savedStudent, HttpStatusCode.valueOf(200));
     }
 
     public ResponseEntity<List<Students>> getAllStudents()
     {
-        List<Students> allStud = studentRepository.findAll();
+        List<Students> allStud = studentRepository.findByIsActiveTrue();
         return new ResponseEntity<>(allStud, HttpStatus.OK);
     }
 
@@ -98,18 +103,19 @@ public class StudentService {
         stdToUpdate.setCountry(std.getCountry());
         stdToUpdate.setModifiedAt(std.getModifiedAt());
         stdToUpdate.setModifiedBy(std.getModifiedBy());
+        stdToUpdate.setAge(std.getAge());
 
         Students savedStudent = studentRepository.save(stdToUpdate);
         return new ResponseEntity<>(savedStudent, HttpStatus.OK);
     }
 
-    public ResponseEntity<Students> deleteStudent(Long id, Students std)
+    public ResponseEntity<Students> deleteStudent(Long id)
     {
         Optional<Students> stdById = studentRepository.findById(id);
         Students stdDelete = stdById.get();
         stdDelete.setIsActive(false);
         stdDelete.setModifiedAt(LocalDateTime.now());
-        stdDelete.setModifiedBy(std.getModifiedBy());
+//        stdDelete.setModifiedBy(std.getModifiedBy());
         Students deletedStudent = studentRepository.save(stdDelete);
         return new ResponseEntity<>(deletedStudent,HttpStatus.OK);
     }

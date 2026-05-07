@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.student.management.exception.ResourceNotFoundException1;
+import com.student.management.Exception.ResourceNotFoundException1;
 
 import java.util.HashMap;
 import java.util.Map;

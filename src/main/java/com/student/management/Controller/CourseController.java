@@ -34,19 +34,19 @@ public class CourseController {
             return ResponseEntity.ok(courses);
         }
 
-        @GetMapping("/{id}")
+        @GetMapping("/getCourse/{id}")
         public ResponseEntity<Course> getCourse(@PathVariable Long id){
             Course course = service.getCourseById(id);
             return ResponseEntity.ok(course);
         }
 
-        @PutMapping("/{id}")
+        @PutMapping("/updateCourse/{id}")
         public ResponseEntity<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody Course course){
             Course updatedCourse = service.updateCourse(id, course);
             return ResponseEntity.ok(updatedCourse);
         }
 
-        @DeleteMapping("/{id}")
+        @DeleteMapping("/deleteCourse/{id}")
         public ResponseEntity<String> deleteCourse(@PathVariable Long id){
             service.softDeleteCourse(id);
             return ResponseEntity.ok("Course deleted successfully (Soft Delete)");

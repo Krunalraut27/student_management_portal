@@ -12,20 +12,25 @@ import static java.security.KeyRep.Type.SECRET;
 public class JwtUtil {
    // private String secterKey = "mysecretkey";
 
-    //public String generateToken(String username) {
     private String SECRET_KEY = "myverysecuresecretkeymyverysecuresecretkey12345";
 
-        public String generateToken(String username)
-        {
-            return Jwts.builder()
-                    .setSubject(username)
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60))
-                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                    .compact();
-        }
-    public String extractUsername(String token){
+    // Generate token with username and role
+    public String generateToken(String username, String role) {
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("role", role)  // Add role as a claim
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60))
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
 
+    // Backward compatibility - generate token with just username
+    public String generateToken(String username) {
+        return generateToken(username, "USER");  // Default role
+    }
+
+    public String extractUsername(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
@@ -33,8 +38,16 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    public boolean validateToken(String token,String username){
+    // Extract role from token
+    public String extractRole(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
+    }
 
+    public boolean validateToken(String token, String username) {
         return extractUsername(token).equals(username);
     }
     }

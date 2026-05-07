@@ -30,12 +30,14 @@ import java.io.IOException;
 
             String token = null;
             String username = null;
+            String role = null;
 
             if(header != null && header.startsWith("Bearer ")){
 
                 token = header.substring(7);
 
                 username = jwtUtil.extractUsername(token);
+                role = jwtUtil.extractRole(token);  // Extract role from token
             }
 
             if(username != null &&

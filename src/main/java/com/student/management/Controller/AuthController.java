@@ -1,4 +1,5 @@
 package com.student.management.Controller;
+import com.student.management.Dto.ChangePasswordRequest;
 import com.student.management.Dto.UserLoginRequest;   //DTO used for login request
 import com.student.management.Entity.UserTable;       //Entity class for database table
 import com.student.management.JwtToken.JwtUtil;       //Class used to generate JWT token
@@ -39,7 +40,12 @@ public class AuthController {
                 )
         );
 
-        return ResponseEntity.ok(jwtUtil.generateToken(request.getUsername()));     //token is created  //Client will use it as a Bearer token
+        // Fetch user to get their role
+        UserTable user = userService.getUserByEmail(request.getUsername());
+        String role = user != null && user.getRole() != null ? user.getRole() : "USER";
+
+        // Generate token with username and role
+        return ResponseEntity.ok(jwtUtil.generateToken(request.getUsername(), role));     //token is created with role  //Client will use it as a Bearer token
     }
 
     //Fetch all students from database.
@@ -62,5 +68,17 @@ public class AuthController {
         return userService.saveUser(user);   //Service saves the user and returns response.
 
 
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<?> changePassword(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody ChangePasswordRequest request) {
+
+        String token = authHeader.substring(7);
+
+        String username = jwtUtil.extractUsername(token);
+
+        return userService.changePassword(username, request);
     }
 }

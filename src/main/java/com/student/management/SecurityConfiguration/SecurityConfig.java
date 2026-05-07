@@ -52,11 +52,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http)
             throws Exception{
 
-        http.cors(c -> c.configurationSource(corsConfigurationSource()))
-                .csrf(c->c.disable())
+        http
+                .cors(c -> c.configurationSource(corsConfigurationSource()))
+                .csrf(c -> c.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest()
-                        .permitAll()
+
+                        // ✅ Public APIs
+                        .requestMatchers("/login", "/logout").permitAll()
+
+                        
+
+                        // ❌ Everything else requires authentication
+                        .anyRequest().authenticated()
                 );
 
         http.addFilterBefore(jwtFilter,

@@ -1,7 +1,10 @@
 package com.student.management.Controller;
 
 import com.student.management.Entity.Students;
+import com.student.management.Entity.UserTable;
+import com.student.management.JwtToken.JwtUtil;
 import com.student.management.Service.StudentService;
+import com.student.management.Service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,12 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    JwtUtil jwtUtil;
+
+    @Autowired
+    UserService userService;
 
 
     @PostMapping("/registerStudent")
@@ -42,8 +51,39 @@ public class StudentController {
     }
 
     @DeleteMapping("deleteStudent/{id}")
-    public ResponseEntity<Students> softDeleteStudent(@PathVariable Long id, Students std)
+    public ResponseEntity<Students> softDeleteStudent(@PathVariable Long id)
     {
-        return studentService.deleteStudent(id,std);
+        return studentService.deleteStudent(id);
+    }
+
+    @GetMapping("/myProfile")
+    public ResponseEntity<?> getStudentProfile(
+            @RequestHeader("Authorization") String authHeader) {
+
+        try {
+
+            // Remove Bearer
+            String token = authHeader.substring(7);
+
+            // Extract username from JWT
+            String username = jwtUtil.extractUsername(token);
+
+            // Fetch user from DB
+            UserTable user = userService.getUserByEmail(username);
+
+            if (user == null) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("User not found");
+            }
+
+            return ResponseEntity.ok(user);
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body("Invalid Token");
+        }
     }
 }

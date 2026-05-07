@@ -34,10 +34,10 @@ public class CourseService {
     public Course getCourseById(Long id) {
 
         Course course = repository.findById(id)
-                .orElseThrow(() -> new com.student.management.exception.ResourceNotFoundException1("Course not found"));
+                .orElseThrow(() -> new com.student.management.Exception.ResourceNotFoundException1("Course not found"));
 
         if (!course.getActive())
-            throw new com.student.management.exception.ResourceNotFoundException1("Course not found or inactive");
+            throw new com.student.management.Exception.ResourceNotFoundException1("Course not found or inactive");
 
         return course;
     }
