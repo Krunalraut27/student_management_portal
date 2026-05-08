@@ -13,4 +13,6 @@ public interface StudentRepository extends JpaRepository<Students, Long>
 
     // Add this new method to find only active students
     List<Students> findByIsActiveTrue();
+    Students findByEmail(String email);
+    boolean existsByPhone(String phoneNumber);
 }

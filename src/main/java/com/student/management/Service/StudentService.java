@@ -47,6 +47,17 @@ public class StudentService {
         student.setCreatedAt(LocalDateTime.now());
         student.setIsActive(true);
 
+        Students std = studentRepository.findByEmail(student.getEmail());
+        if(std!=null)
+        {
+            return new ResponseEntity("Email Already Exists", HttpStatus.BAD_REQUEST);
+        }
+
+        if(studentRepository.existsByPhone(student.getPhone()))
+        {
+            return new ResponseEntity("Phone Number Already Exists", HttpStatus.BAD_REQUEST);
+        }
+
         Course courseById = courseService.getCourseById(student.getCourse().getId());
         student.setCourse(courseById);
         Students savedStudent = studentRepository.save(student);
